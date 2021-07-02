@@ -55,17 +55,14 @@ app.post('/deleteUser', async (req, res) => {
 app.post('/updateUser', async (req, res) => {
     console.log(req.body)
     if (req.body.id) {
-        try {
-            await admin.auth()
-                .updateUser(req.body.id, {
-                    email: req.body?.email,
-                })
-            res.end(JSON.stringify({
-                status: 'success'
-            }))
-        } catch (e) {
-            res.end(JSON.stringify({status: 'ineligible'}))
-        }
+        await admin.auth()
+            .updateUser(req.body.id, {
+                email: req.body?.email,
+            })
+            .then((s) => {
+                res.status(201).json({message: "user data is updated successfully", data: {...s}})
+            }).catch(e => res.status(400).json({err: e}))
+
     } else {
         res.end(JSON.stringify({status: 'ineligible'}))
     }
